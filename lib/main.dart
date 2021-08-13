@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:midterm_mobile/models/history.dart';
+import 'package:midterm_mobile/models/lasttime.dart';
 import 'package:midterm_mobile/pages/home.dart';
 import 'package:midterm_mobile/pages/second.dart';
+
 import 'package:midterm_mobile/pages/third.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -8,6 +11,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  Hive.registerAdapter(LastTimeAdapter());
+  Hive.registerAdapter(HistoryAdapter());
+  await Hive.openBox<LastTime>('lasttimelist');
+  await Hive.openBox<LastTime>('history');
   runApp(MyApp());
 }
 
@@ -32,13 +39,12 @@ class MyApp extends StatelessWidget {
 
 Widget _getPageWidget({required RouteSettings settings}) {
   final uri = Uri.parse(settings.name ?? '');
-  // print('test');
   print(uri);
 
   if (uri.path == '/') {
     return MyHomePage(title: 'Mobile');
-  } else if (uri.path == '/second') {
-    return SecondPage();
+  } else if (uri.path == '/history') {
+    return HistoryPage();
   } else if (uri.path == '/third') {
     return ThirdPage();
   } else {
@@ -61,7 +67,7 @@ class _MyMainState extends State<MyScaffold> {
   void initState() {
     if(widget.route == '/'){
       _currentIndex = 0;
-    }else if(widget.route == '/second'){
+    }else if(widget.route == '/history'){
       _currentIndex = 1;
     }else if(widget.route == '/third'){
       _currentIndex = 2;
@@ -83,9 +89,8 @@ class _MyMainState extends State<MyScaffold> {
         onTap: onTapTapped,
         currentIndex: _currentIndex,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'List'),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
         ],
       ),
     );
@@ -96,7 +101,7 @@ class _MyMainState extends State<MyScaffold> {
     switch(value){
       case 0: navigate = '/';
       break;
-      case 1: navigate = '/second';
+      case 1: navigate = '/history';
       break;
       case 2: navigate = '/third';
       break;
