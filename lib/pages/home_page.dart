@@ -25,6 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   String value = items.first;
+  bool descending = true;
 
   @override
   void dispose() {
@@ -48,6 +49,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     .toList()
                     .cast<LastTime>();
 
+              if(descending == true){
+                lasttimelist..sort((a,b) => a.lastday.compareTo(b.lastday));
+              }
+              else{
+                lasttimelist..sort((a,b) => b.lastday.compareTo(a.lastday));
+              }
+
               return Column(
                 children: [
                   Row(
@@ -59,6 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       buildDropdown(),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: TextButton(onPressed: () => {descending = !this.descending,setState((){})}, child: Icon(Icons.sort)),
+                      )
                     ],
                   ),
                   Expanded(
