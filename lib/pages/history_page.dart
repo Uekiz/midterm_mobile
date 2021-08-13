@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:midterm_mobile/boxes.dart';
 import 'package:midterm_mobile/main.dart';
+import 'package:midterm_mobile/models/history.dart';
 import 'package:midterm_mobile/models/lasttime.dart';
 import 'package:intl/intl.dart';
 
@@ -38,22 +39,22 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return MyScaffold(
         route: '/',
-        body: ValueListenableBuilder<Box<LastTime>>(
-            valueListenable: Boxes.getLastTime().listenable(),
+        body: ValueListenableBuilder<Box<History>>(
+            valueListenable: Boxes.getHistory().listenable(),
             builder: (context, box, _) {
-              var lasttimelist = box.values.toList().cast<LastTime>();
+              var lasttimelist = box.values.toList().cast<History>();
 
               if (value != 'none')
                 lasttimelist = box.values
                     .where((element) => element.group == value)
                     .toList()
-                    .cast<LastTime>();
+                    .cast<History>();
 
               if(descending == true){
-                lasttimelist..sort((a,b) => a.lastday.compareTo(b.lastday));
+                lasttimelist..sort((a,b) => a.day.compareTo(b.day));
               }
               else{
-                lasttimelist..sort((a,b) => b.lastday.compareTo(a.lastday));
+                lasttimelist..sort((a,b) => b.day.compareTo(a.day));
               }
 
               return Column(
@@ -80,7 +81,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       itemBuilder: (BuildContext context, int index) {
                         final lasttime = lasttimelist[index];
 
-                        final date = DateFormat.Md().format(lasttime.lastday);
+                        final date = DateFormat.Md().format(lasttime.day);
 
                         return Card(
                             color: Colors.white,
@@ -146,10 +147,4 @@ class _HistoryPageState extends State<HistoryPage> {
       ),
     );
   }
-}
-
-Future stampLastTime(LastTime lasttime) async {
-  lasttime.lastday = DateTime.now();
-
-  lasttime.save();
 }

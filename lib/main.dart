@@ -159,6 +159,13 @@ Future addLastTime(String title, String group) async {
     ..lastday = DateTime.now().subtract(Duration(days: 7))
     ..group = group;
 
+  final history = History()
+    ..title = title
+    ..day = DateTime.now().subtract(Duration(days: 7))
+    ..group = group;
+
   final box = Boxes.getLastTime();
+  final box2 = Boxes.getHistory();
   box.add(lasttime);
+  box2.add(history);
 }

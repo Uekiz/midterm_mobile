@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:midterm_mobile/boxes.dart';
 import 'package:midterm_mobile/main.dart';
+import 'package:midterm_mobile/models/history.dart';
 import 'package:midterm_mobile/models/lasttime.dart';
 import 'package:intl/intl.dart';
 
@@ -174,6 +175,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
 Future stampLastTime(LastTime lasttime) async {
   lasttime.lastday = DateTime.now();
+
+
+  final history = History()
+    ..title = lasttime.title
+    ..day = lasttime.lastday
+    ..group = lasttime.group;
+
+
+  final box2 = Boxes.getHistory();
+  box2.add(history);
 
   lasttime.save();
 }
