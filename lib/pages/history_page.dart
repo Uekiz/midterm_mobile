@@ -50,62 +50,87 @@ class _HistoryPageState extends State<HistoryPage> {
                     .toList()
                     .cast<History>();
 
-              if(descending == true){
-                lasttimelist..sort((a,b) => a.day.compareTo(b.day));
-              }
-              else{
-                lasttimelist..sort((a,b) => b.day.compareTo(a.day));
+              if (descending == true) {
+                lasttimelist..sort((a, b) => a.day.compareTo(b.day));
+              } else {
+                lasttimelist..sort((a, b) => b.day.compareTo(a.day));
               }
 
-              return Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Filter by',
+              if (lasttimelist.isEmpty) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Text(
+                        'There is no history right now.',
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.bold, fontSize: 24),
                       ),
-                      buildDropdown(),
-                      Padding(
-                        padding: const EdgeInsets.only(right :8.0),
-                        child: TextButton(onPressed: () => {descending = !this.descending,setState((){})}, child: Icon(Icons.sort)),
-                      )
-                    ],
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      padding: EdgeInsets.all(8),
-                      itemCount: lasttimelist.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final lasttime = lasttimelist[index];
-
-                        final date = DateFormat.Md().format(lasttime.day);
-
-                        return Card(
-                            color: Colors.white,
-                            child: ExpansionTile(
-                              tilePadding: EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 8),
-                              title: Text(
-                                lasttime.title,
-                                maxLines: 2,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              subtitle: Text('ทำครั้งล่าสุดเมื่อ : $date'),
-                              trailing: Text(
-                                lasttime.group,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
-                            ));
-                      },
                     ),
-                  ),
-                ],
-              );
+                    Center(
+                      child: Text(
+                          'You can see all the Last Time history here, but there are none right now'),
+                    )
+                  ],
+                );
+              } else {
+                return Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Filter by',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        buildDropdown(),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: TextButton(
+                              onPressed: () => {
+                                    descending = !this.descending,
+                                    setState(() {})
+                                  },
+                              child: Icon(Icons.sort)),
+                        )
+                      ],
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.all(8),
+                        itemCount: lasttimelist.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final lasttime = lasttimelist[index];
+
+                          final date = DateFormat.Md().format(lasttime.day);
+
+                          return Card(
+                              color: Colors.white,
+                              child: ExpansionTile(
+                                tilePadding: EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 8),
+                                title: Text(
+                                  lasttime.title,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                                subtitle: Text('ทำครั้งล่าสุดเมื่อ : $date'),
+                                trailing: Text(
+                                  lasttime.group,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                ),
+                              ));
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }
             }));
   }
 

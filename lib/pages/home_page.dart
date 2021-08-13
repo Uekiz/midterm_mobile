@@ -50,86 +50,111 @@ class _MyHomePageState extends State<MyHomePage> {
                     .toList()
                     .cast<LastTime>();
 
-              if(descending == true){
-                lasttimelist..sort((a,b) => a.lastday.compareTo(b.lastday));
-              }
-              else{
-                lasttimelist..sort((a,b) => b.lastday.compareTo(a.lastday));
+              if (descending == true) {
+                lasttimelist..sort((a, b) => a.lastday.compareTo(b.lastday));
+              } else {
+                lasttimelist..sort((a, b) => b.lastday.compareTo(a.lastday));
               }
 
-              return Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Filter by',
+              if (lasttimelist.isEmpty) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Text(
+                        'There is no Last Time right now.',
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.bold, fontSize: 24),
                       ),
-                      buildDropdown(),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: TextButton(onPressed: () => {descending = !this.descending,setState((){})}, child: Icon(Icons.sort)),
-                      )
-                    ],
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      padding: EdgeInsets.all(8),
-                      itemCount: lasttimelist.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final lasttime = lasttimelist[index];
-
-                        final date = DateFormat.Md().format(lasttime.lastday);
-
-                        return Card(
-                            color: Colors.white,
-                            child: ExpansionTile(
-                              tilePadding: EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 8),
-                              title: Text(
-                                lasttime.title,
-                                maxLines: 2,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              subtitle: Text('ทำครั้งล่าสุดเมื่อ : $date'),
-                              trailing: Text(
-                                lasttime.group,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
-                              onExpansionChanged: (_) => showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                        title: Text(
-                                          '${lasttime.title}',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20),
-                                        ),
-                                        content: Text('Stamp today?'),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              child: Text("No")),
-                                          TextButton(
-                                              onPressed: () => {
-                                                    stampLastTime(lasttime),
-                                                    Navigator.pop(context)
-                                                  },
-                                              child: Text("Yes"))
-                                        ],
-                                        elevation: 24,
-                                      )),
-                            ));
-                      },
                     ),
-                  ),
-                ],
-              );
+                    Center(
+                      child: Text(
+                          'You can add it by pressing add button on buttom right of the screen.'),
+                    )
+                  ],
+                );
+              } else {
+                return Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Filter by',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        buildDropdown(),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: TextButton(
+                              onPressed: () => {
+                                    descending = !this.descending,
+                                    setState(() {})
+                                  },
+                              child: Icon(Icons.sort)),
+                        )
+                      ],
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.all(8),
+                        itemCount: lasttimelist.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final lasttime = lasttimelist[index];
+
+                          final date = DateFormat.Md().format(lasttime.lastday);
+
+                          return Card(
+                              color: Colors.white,
+                              child: ExpansionTile(
+                                tilePadding: EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 8),
+                                title: Text(
+                                  lasttime.title,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                                subtitle: Text('ทำครั้งล่าสุดเมื่อ : $date'),
+                                trailing: Text(
+                                  lasttime.group,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                ),
+                                onExpansionChanged: (_) => showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          title: Text(
+                                            '${lasttime.title}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20),
+                                          ),
+                                          content: Text('Stamp today?'),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                                child: Text("No")),
+                                            TextButton(
+                                                onPressed: () => {
+                                                      stampLastTime(lasttime),
+                                                      Navigator.pop(context)
+                                                    },
+                                                child: Text("Yes"))
+                                          ],
+                                          elevation: 24,
+                                        )),
+                              ));
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }
             }));
   }
 
@@ -176,12 +201,10 @@ class _MyHomePageState extends State<MyHomePage> {
 Future stampLastTime(LastTime lasttime) async {
   lasttime.lastday = DateTime.now();
 
-
   final history = History()
     ..title = lasttime.title
     ..day = lasttime.lastday
     ..group = lasttime.group;
-
 
   final box2 = Boxes.getHistory();
   box2.add(history);
