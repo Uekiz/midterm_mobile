@@ -17,6 +17,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<LastTime> lasttimelist = [];
+  static final List<String> items = <String>[
+    'none',
+    'งานประจำ',
+    'งานไม่ประจำ',
+  ];
+
+  String value = items.first;
 
   @override
   void dispose() {
@@ -32,10 +39,20 @@ class _MyHomePageState extends State<MyHomePage> {
         body: ValueListenableBuilder<Box<LastTime>>(
             valueListenable: Boxes.getLastTime().listenable(),
             builder: (context, box, _) {
-              final lasttimelist = box.values.toList().cast<LastTime>();
+              var lasttimelist = box.values.toList().cast<LastTime>();
+
+              if(value != 'none')
+              lasttimelist = box.values.where((element) => element.group == value).toList().cast<LastTime>();
 
               return Column(
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text('Filter by',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                      buildDropdown(),
+                    ],
+                  ),
                   Expanded(
                     child: ListView.builder(
                       padding: EdgeInsets.all(8),
@@ -43,8 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       itemBuilder: (BuildContext context, int index) {
                         final lasttime = lasttimelist[index];
 
-                        final date =
-                            DateFormat.MMMMd().format(lasttime.lastday);
+                        final date = DateFormat.Md().format(lasttime.lastday);
 
                         return Card(
                           color: Colors.white,
@@ -57,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
-                            subtitle: Text(date),
+                            subtitle: Text('ทำครั้งล่าสุดเมื่อ : $date'),
                             trailing: Text(
                               lasttime.group,
                               style: TextStyle(
@@ -71,5 +87,44 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               );
             }));
+  }
+
+  Widget buildDropdown() {
+    return Padding(
+      padding: EdgeInsets.all(15),
+      child: Container(
+        width: 175,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          border: Border.all(color: Colors.grey, width: 2),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: value, // currently selected item
+            items: items
+                .map((item) => DropdownMenuItem<String>(
+                      child: Row(
+                        children: [
+                          Text(
+                            item,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                      value: item,
+                    ))
+                .toList(),
+            onChanged: (value) => setState(() {
+              this.value = value ?? '';
+            }),
+          ),
+        ),
+      ),
+    );
   }
 }

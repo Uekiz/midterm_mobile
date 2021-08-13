@@ -18,8 +18,7 @@ class LastTimeDialog extends StatefulWidget {
 
 class _LastTimeDialogState extends State<LastTimeDialog> {
   final formKey = GlobalKey<FormState>();
-  final nameController = TextEditingController();
-  final groupController = TextEditingController();
+  final titleController = TextEditingController();
 
   bool isWeekly = true;
 
@@ -30,15 +29,13 @@ class _LastTimeDialogState extends State<LastTimeDialog> {
     if (widget.lasttime != null) {
       final lasttime = widget.lasttime!;
 
-      nameController.text = lasttime.title;
-      groupController.text = lasttime.group;
+      titleController.text = lasttime.title;
     }
   }
 
   @override
   void dispose() {
-    nameController.dispose();
-    groupController.dispose();
+    titleController.dispose();
 
     super.dispose();
   }
@@ -58,8 +55,6 @@ class _LastTimeDialogState extends State<LastTimeDialog> {
             children: <Widget>[
               SizedBox(height: 8),
               buildName(),
-              // SizedBox(height: 8),
-              // buildAmount(),
               SizedBox(height: 8),
               buildRadioButtons(),
             ],
@@ -74,7 +69,7 @@ class _LastTimeDialogState extends State<LastTimeDialog> {
   }
 
   Widget buildName() => TextFormField(
-        controller: nameController,
+        controller: titleController,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Enter Title',
@@ -82,18 +77,6 @@ class _LastTimeDialogState extends State<LastTimeDialog> {
         validator: (name) =>
             name != null && name.isEmpty ? 'Enter a Title' : null,
       );
-
-  // Widget buildAmount() => TextFormField(
-  //       decoration: InputDecoration(
-  //         border: OutlineInputBorder(),
-  //         hintText: 'Enter Group',
-  //       ),
-  //       keyboardType: TextInputType.number,
-  //       validator: (amount) => amount != null && double.tryParse(amount) == null
-  //           ? 'Enter a valid number'
-  //           : null,
-  //       controller: groupController,
-  //     );
 
   Widget buildRadioButtons() => Column(
         children: [
@@ -126,8 +109,7 @@ class _LastTimeDialogState extends State<LastTimeDialog> {
         final isValid = formKey.currentState!.validate();
 
         if (isValid) {
-          final name = nameController.text;
-          // final group = groupController.text;
+          final name = titleController.text;
 
           widget.onClickedDone(name, isWeekly ? 'งานประจำ' : 'งานไม่ประจำ');
 
