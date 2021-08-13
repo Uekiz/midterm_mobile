@@ -43,13 +43,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       itemBuilder: (BuildContext context, int index) {
                         final lasttime = lasttimelist[index];
 
-                        final date = DateFormat.MMMMd().format(lasttime.lastday);
+                        final date =
+                            DateFormat.MMMMd().format(lasttime.lastday);
 
                         return Card(
                           color: Colors.white,
                           child: ExpansionTile(
-                            tilePadding:
-                                EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                            tilePadding: EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 8),
                             title: Text(
                               lasttime.title,
                               maxLines: 2,

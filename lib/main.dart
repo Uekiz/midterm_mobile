@@ -13,7 +13,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:midterm_mobile/widget/lasttime_dialog.dart';
 
-Future main() async{
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(LastTimeAdapter());
@@ -49,7 +49,7 @@ Widget _getPageWidget({required RouteSettings settings}) {
   if (uri.path == '/') {
     return MyHomePage(title: 'Last Time');
   } else if (uri.path == '/history') {
-    return HistoryPage();
+    return HistoryPage(title: 'Last Time History');
   } else if (uri.path == '/third') {
     return ThirdPage();
   } else {
@@ -70,11 +70,11 @@ class _MyMainState extends State<MyScaffold> {
 
   @override
   void initState() {
-    if(widget.route == '/'){
+    if (widget.route == '/') {
       _currentIndex = 0;
-    }else if(widget.route == '/history'){
+    } else if (widget.route == '/history') {
       _currentIndex = 1;
-    }else if(widget.route == '/third'){
+    } else if (widget.route == '/third') {
       _currentIndex = 2;
     }
 
@@ -83,18 +83,19 @@ class _MyMainState extends State<MyScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return 
-    Conditional.single(
-          context: context,
-          conditionBuilder: (BuildContext context) => window.location.href.contains('history') == false,
-          widgetBuilder: (BuildContext context) => Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text('Last Time'),
-      ),
-      body: widget.body,
-      floatingActionButton: FloatingActionButton(
+    return Conditional.single(
+      context: context,
+      conditionBuilder: (BuildContext context) =>
+          window.location.href.contains('history') == false,
+      widgetBuilder: (BuildContext context) => Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text('Last Time'),
+        ),
+        body: widget.body,
+        floatingActionButton: FloatingActionButton(
+          mini: true,
           child: Icon(Icons.add),
           onPressed: () => showDialog(
             context: context,
@@ -103,43 +104,48 @@ class _MyMainState extends State<MyScaffold> {
             ),
           ),
         ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: onTapTapped,
-        currentIndex: _currentIndex,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'List'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
-        ],
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: onTapTapped,
+          currentIndex: _currentIndex,
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.list), label: 'List'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.history), label: 'History'),
+          ],
+        ),
       ),
-    ),
-          fallbackBuilder: (BuildContext context) => Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text('Last Time'),
+      fallbackBuilder: (BuildContext context) => Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text('Last Time'),
+        ),
+        body: widget.body,
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: onTapTapped,
+          currentIndex: _currentIndex,
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.list), label: 'List'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.history), label: 'History'),
+          ],
+        ),
       ),
-      body: widget.body,
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: onTapTapped,
-        currentIndex: _currentIndex,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'List'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
-        ],
-      ),
-    ),
-        );
+    );
   }
 
   void onTapTapped(int value) {
     String navigate = '/';
-    switch(value){
-      case 0: navigate = '/';
-      break;
-      case 1: navigate = '/history';
-      break;
-      case 2: navigate = '/third';
-      break;
+    switch (value) {
+      case 0:
+        navigate = '/';
+        break;
+      case 1:
+        navigate = '/history';
+        break;
+      case 2:
+        navigate = '/third';
+        break;
     }
     setState(() {
       Navigator.of(context).pushNamed(navigate);
@@ -148,11 +154,11 @@ class _MyMainState extends State<MyScaffold> {
 }
 
 Future addLastTime(String title, String group) async {
-    final lasttime = LastTime()
-      ..title = title
-      ..lastday = DateTime.now()
-      ..group = group;
+  final lasttime = LastTime()
+    ..title = title
+    ..lastday = DateTime.now()
+    ..group = group;
 
-    final box = Boxes.getLastTime();
-    box.add(lasttime);
-  }
+  final box = Boxes.getLastTime();
+  box.add(lasttime);
+}

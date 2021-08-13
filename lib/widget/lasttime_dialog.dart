@@ -80,7 +80,7 @@ class _LastTimeDialogState extends State<LastTimeDialog> {
           hintText: 'Enter Title',
         ),
         validator: (name) =>
-            name != null && name.isEmpty ? 'Enter a name' : null,
+            name != null && name.isEmpty ? 'Enter a Title' : null,
       );
 
   // Widget buildAmount() => TextFormField(
