@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -41,15 +42,22 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context, box, _) {
               var lasttimelist = box.values.toList().cast<LastTime>();
 
-              if(value != 'none')
-              lasttimelist = box.values.where((element) => element.group == value).toList().cast<LastTime>();
+              if (value != 'none')
+                lasttimelist = box.values
+                    .where((element) => element.group == value)
+                    .toList()
+                    .cast<LastTime>();
 
               return Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text('Filter by',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                      Text(
+                        'Filter by',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
                       buildDropdown(),
                     ],
                   ),
@@ -63,24 +71,47 @@ class _MyHomePageState extends State<MyHomePage> {
                         final date = DateFormat.Md().format(lasttime.lastday);
 
                         return Card(
-                          color: Colors.white,
-                          child: ExpansionTile(
-                            tilePadding: EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 8),
-                            title: Text(
-                              lasttime.title,
-                              maxLines: 2,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                            subtitle: Text('ทำครั้งล่าสุดเมื่อ : $date'),
-                            trailing: Text(
-                              lasttime.group,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                          ),
-                        );
+                            color: Colors.white,
+                            child: ExpansionTile(
+                              tilePadding: EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 8),
+                              title: Text(
+                                lasttime.title,
+                                maxLines: 2,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              subtitle: Text('ทำครั้งล่าสุดเมื่อ : $date'),
+                              trailing: Text(
+                                lasttime.group,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              onExpansionChanged: (_) => showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: Text(
+                                          '${lasttime.title}',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                        ),
+                                        content: Text('Stamp today?'),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              child: Text("No")),
+                                          TextButton(
+                                              onPressed: () => {
+                                                    stampLastTime(lasttime),
+                                                    Navigator.pop(context)
+                                                  },
+                                              child: Text("Yes"))
+                                        ],
+                                        elevation: 24,
+                                      )),
+                            ));
                       },
                     ),
                   ),
@@ -127,4 +158,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+Future stampLastTime(LastTime lasttime) async {
+  lasttime.lastday = DateTime.now();
+
+  lasttime.save();
 }

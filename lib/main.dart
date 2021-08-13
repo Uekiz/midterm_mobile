@@ -156,7 +156,7 @@ class _MyMainState extends State<MyScaffold> {
 Future addLastTime(String title, String group) async {
   final lasttime = LastTime()
     ..title = title
-    ..lastday = DateTime.now()
+    ..lastday = DateTime.now().subtract(Duration(days: 7))
     ..group = group;
 
   final box = Boxes.getLastTime();
