@@ -58,19 +58,41 @@ class _MyHomePageState extends State<MyHomePage> {
 
               if (lasttimelist.isEmpty) {
                 return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Center(
-                      child: Text(
-                        'There is no Last Time right now.',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 24),
+                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Filter by',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        buildDropdown(),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: TextButton(
+                              onPressed: () => {
+                                    descending = !this.descending,
+                                    setState(() {})
+                                  },
+                              child: Icon(Icons.sort)),
+                        )
+                      ],
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          '                                   There is no Last Time right now. \n You can add it by pressing add button on buttom right of the screen.',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 24),
+                        ),
                       ),
                     ),
-                    Center(
-                      child: Text(
-                          'You can add it by pressing add button on buttom right of the screen.'),
-                    )
+                    // Center(
+                    //   child: Text(
+                    //       'You can add it by pressing add button on buttom right of the screen.'),
+                    // )
                   ],
                 );
               } else {
