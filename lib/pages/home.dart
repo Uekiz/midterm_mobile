@@ -23,9 +23,9 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  
+
   @override
   Widget build(BuildContext context) {
-    return MyScaffold(route: '/', body: Text('home'));
+    return MyScaffold(route: '/', body: Text('home'),);
   }
 }

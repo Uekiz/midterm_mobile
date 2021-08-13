@@ -1,4 +1,8 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
+import 'package:midterm_mobile/boxes.dart';
 import 'package:midterm_mobile/models/history.dart';
 import 'package:midterm_mobile/models/lasttime.dart';
 import 'package:midterm_mobile/pages/home.dart';
@@ -7,6 +11,7 @@ import 'package:midterm_mobile/pages/second.dart';
 import 'package:midterm_mobile/pages/third.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:midterm_mobile/widget/lasttime_dialog.dart';
 
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +19,7 @@ Future main() async{
   Hive.registerAdapter(LastTimeAdapter());
   Hive.registerAdapter(HistoryAdapter());
   await Hive.openBox<LastTime>('lasttimelist');
-  await Hive.openBox<LastTime>('history');
+  await Hive.openBox<History>('history');
   runApp(MyApp());
 }
 
@@ -78,7 +83,36 @@ class _MyMainState extends State<MyScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return 
+    Conditional.single(
+          context: context,
+          conditionBuilder: (BuildContext context) => window.location.href.contains('history') == false,
+          widgetBuilder: (BuildContext context) => Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text('Mobile'),
+      ),
+      body: widget.body,
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (context) => LastTimeDialog(
+              onClickedDone: addTransaction,
+            ),
+          ),
+        ),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: onTapTapped,
+        currentIndex: _currentIndex,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'List'),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
+        ],
+      ),
+    ),
+          fallbackBuilder: (BuildContext context) => Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -93,7 +127,8 @@ class _MyMainState extends State<MyScaffold> {
           BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
         ],
       ),
-    );
+    ),
+        );
   }
 
   void onTapTapped(int value) {
@@ -112,3 +147,12 @@ class _MyMainState extends State<MyScaffold> {
   }
 }
 
+Future addTransaction(String title, String group) async {
+    final lasttime = LastTime()
+      ..title = title
+      ..lastday = DateTime.now()
+      ..group = group;
+
+    final box = Boxes.getTransactions();
+    box.add(lasttime);
+  }
