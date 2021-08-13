@@ -21,7 +21,7 @@ class _LastTimeDialogState extends State<LastTimeDialog> {
   final nameController = TextEditingController();
   final groupController = TextEditingController();
 
-  bool isExpense = true;
+  bool isWeekly = true;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _LastTimeDialogState extends State<LastTimeDialog> {
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.lasttime != null;
-    final title = isEditing ? 'Edit lasttime' : 'Add lasttime';
+    final title = isEditing ? 'Edit LastTime' : 'Add LastTime';
 
     return AlertDialog(
       title: Text(title),
@@ -58,8 +58,8 @@ class _LastTimeDialogState extends State<LastTimeDialog> {
             children: <Widget>[
               SizedBox(height: 8),
               buildName(),
-              SizedBox(height: 8),
-              buildAmount(),
+              // SizedBox(height: 8),
+              // buildAmount(),
               SizedBox(height: 8),
               buildRadioButtons(),
             ],
@@ -77,37 +77,37 @@ class _LastTimeDialogState extends State<LastTimeDialog> {
         controller: nameController,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
-          hintText: 'Enter Name',
+          hintText: 'Enter Title',
         ),
         validator: (name) =>
             name != null && name.isEmpty ? 'Enter a name' : null,
       );
 
-  Widget buildAmount() => TextFormField(
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          hintText: 'Enter Amount',
-        ),
-        keyboardType: TextInputType.number,
-        validator: (amount) => amount != null && double.tryParse(amount) == null
-            ? 'Enter a valid number'
-            : null,
-        controller: groupController,
-      );
+  // Widget buildAmount() => TextFormField(
+  //       decoration: InputDecoration(
+  //         border: OutlineInputBorder(),
+  //         hintText: 'Enter Group',
+  //       ),
+  //       keyboardType: TextInputType.number,
+  //       validator: (amount) => amount != null && double.tryParse(amount) == null
+  //           ? 'Enter a valid number'
+  //           : null,
+  //       controller: groupController,
+  //     );
 
   Widget buildRadioButtons() => Column(
         children: [
           RadioListTile<bool>(
-            title: Text('Expense'),
+            title: Text('งานประจำ'),
             value: true,
-            groupValue: isExpense,
-            onChanged: (value) => setState(() => isExpense = value!),
+            groupValue: isWeekly,
+            onChanged: (value) => setState(() => isWeekly = value!),
           ),
           RadioListTile<bool>(
-            title: Text('Income'),
+            title: Text('งานไม่ประจำ'),
             value: false,
-            groupValue: isExpense,
-            onChanged: (value) => setState(() => isExpense = value!),
+            groupValue: isWeekly,
+            onChanged: (value) => setState(() => isWeekly = value!),
           ),
         ],
       );
@@ -127,9 +127,9 @@ class _LastTimeDialogState extends State<LastTimeDialog> {
 
         if (isValid) {
           final name = nameController.text;
-          final group = groupController.text;
+          // final group = groupController.text;
 
-          widget.onClickedDone(name, group);
+          widget.onClickedDone(name, isWeekly ? 'งานประจำ' : 'งานไม่ประจำ');
 
           Navigator.of(context).pop();
         }

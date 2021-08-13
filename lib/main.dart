@@ -5,8 +5,8 @@ import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart
 import 'package:midterm_mobile/boxes.dart';
 import 'package:midterm_mobile/models/history.dart';
 import 'package:midterm_mobile/models/lasttime.dart';
-import 'package:midterm_mobile/pages/home.dart';
-import 'package:midterm_mobile/pages/second.dart';
+import 'package:midterm_mobile/pages/home_page.dart';
+import 'package:midterm_mobile/pages/history_page.dart';
 
 import 'package:midterm_mobile/pages/third.dart';
 import 'package:hive/hive.dart';
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Mobile',
+      title: 'Last Time',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -47,7 +47,7 @@ Widget _getPageWidget({required RouteSettings settings}) {
   print(uri);
 
   if (uri.path == '/') {
-    return MyHomePage(title: 'Mobile');
+    return MyHomePage(title: 'Last Time');
   } else if (uri.path == '/history') {
     return HistoryPage();
   } else if (uri.path == '/third') {
@@ -91,7 +91,7 @@ class _MyMainState extends State<MyScaffold> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Mobile'),
+        title: Text('Last Time'),
       ),
       body: widget.body,
       floatingActionButton: FloatingActionButton(
@@ -99,7 +99,7 @@ class _MyMainState extends State<MyScaffold> {
           onPressed: () => showDialog(
             context: context,
             builder: (context) => LastTimeDialog(
-              onClickedDone: addTransaction,
+              onClickedDone: addLastTime,
             ),
           ),
         ),
@@ -116,7 +116,7 @@ class _MyMainState extends State<MyScaffold> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Mobile'),
+        title: Text('Last Time'),
       ),
       body: widget.body,
       bottomNavigationBar: BottomNavigationBar(
@@ -147,12 +147,12 @@ class _MyMainState extends State<MyScaffold> {
   }
 }
 
-Future addTransaction(String title, String group) async {
+Future addLastTime(String title, String group) async {
     final lasttime = LastTime()
       ..title = title
       ..lastday = DateTime.now()
       ..group = group;
 
-    final box = Boxes.getTransactions();
+    final box = Boxes.getLastTime();
     box.add(lasttime);
   }
